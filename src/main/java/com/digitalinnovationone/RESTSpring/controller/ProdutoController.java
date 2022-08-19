@@ -2,16 +2,13 @@ package com.digitalinnovationone.RESTSpring.controller;
 
 
 import com.digitalinnovationone.RESTSpring.entity.Produto;
+import com.digitalinnovationone.RESTSpring.exception.ProductNullException;
+import com.digitalinnovationone.RESTSpring.exception.ProductPriceException;
 import com.digitalinnovationone.RESTSpring.service.ProdutoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +23,13 @@ public class ProdutoController {
 
     @PostMapping(value = "/save")
     public ResponseEntity<Produto> salvaProduto(@RequestBody Produto produto) throws Exception {
+
+        if(produto.getNome() == null || produto.getPreco() == null)
+            throw new ProductNullException();
+
+        if(produto.getPreco() < 0)
+            throw new ProductPriceException();
+
 
         produto = produtoService.save(produto);
 
